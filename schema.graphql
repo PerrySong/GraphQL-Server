@@ -1,0 +1,25 @@
+# This type specifies the entry points into our API.
+type Query {
+   getProfile(id: ID): Profile
+   getProfileList: [Profile] 
+}
+
+type Mutation {
+    signup(firstname: String!, lastname: String!, email: String!): Profile
+    login(email: String!): Profile
+}
+
+type Profile {
+   id: ID!                # "!" denotes a required field
+   firstname: String!
+   lastname: String!
+   email: String!
+}
+
+type User {
+    id: ID!
+    firstname: String!
+    lastname: String!
+    email: String!
+    password: String!
+}
