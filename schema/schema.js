@@ -16,11 +16,6 @@ type Mutation {
     login(email: String!, password: String!): Profile
 }
 
-type GithubProfile {
-    id: Int!
-    owner: Owner!
-}
-
 type Owner {
     login: String!
     avatar_url: String!
@@ -33,6 +28,11 @@ type Owner {
     location: String
     email: String!
     bio: String
+}
+
+type GithubProfile {
+    id: Int!
+    owner: Owner!
 }
 
 type Profile {
