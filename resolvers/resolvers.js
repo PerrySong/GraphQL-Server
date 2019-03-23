@@ -48,42 +48,43 @@ const getProfileById = ({ id }) => {
     return Promise.resolve(profiles.find(p => p.id === id));
 }
 
-// const signup = ({ firstname, lastname, email, password }) => {
-//     var newId = users.length > 0 ? users[users.length - 1].id + 1 : 0;
-//     users = [...users, {
-//         id: newId,
-//         email: email,
-//         password: password,
-//         firstname: firstname,
-//         lastname: lastname,
-
-//     }];
-//     // return Promise.resolve(users[users.length-1]);
-
-//     profiles = [...profiles, {
-//         id: newId,
-//         firstname: firstname,
-//         lastname: lastname,
-//         email: email
-//     }]
-//     return Promise.resolve(profiles[profiles.length - 1]);
-// }
-
-
+// For testing purposes. Use the function below this to do the actual mutation
 const signup = ({ firstname, lastname, email, password }) => {
+    var newId = users.length > 0 ? users[users.length - 1].id + 1 : 0;
+    users = [...users, {
+        id: newId,
+        email: email,
+        password: password,
+        firstname: firstname,
+        lastname: lastname,
 
-    const userAction = async() => {
-        const response = await fetch('http://localhost:8000/signup', {
-            method: 'POST',
-            body: `{"email":"` + email + `", "password":"` + password + `", "firstname":"` + firstname + `", lasttname":"` + lastname + `"}`, // string or object
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        const myJson = await response.json(); //extract JSON from the http response
-        // do something with myJson, will return a json contain id
-    }
+    }];
+    // return Promise.resolve(users[users.length-1]);
+
+    profiles = [...profiles, {
+        id: newId,
+        firstname: firstname,
+        lastname: lastname,
+        email: email
+    }]
+    return Promise.resolve(profiles[profiles.length - 1]);
 }
+
+//// For production
+// const signup = ({ firstname, lastname, email, password }) => {
+
+//     const userAction = async() => {
+//         const response = await fetch('http://localhost:8000/signup', {
+//             method: 'POST',
+//             body: `{"email":"` + email + `", "password":"` + password + `", "firstname":"` + firstname + `", lasttname":"` + lastname + `"}`, // string or object
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             }
+//         });
+//         const myJson = await response.json(); //extract JSON from the http response
+//         // do something with myJson, will return a json contain id
+//     }
+// }
 
 const getAllUsers = () => {
     return Promise.resolve(users);

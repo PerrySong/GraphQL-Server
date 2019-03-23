@@ -7,12 +7,32 @@ type Query {
    getProfile(id: Int!): Profile
    getProfileList: [Profile]   # "[]" means this is a list of profiles
    getUsers: [User]
+   getGithubProfile: GithubProfile
 }
 
 type Mutation {
     # signup(firstname: String!, lastname: String!, email: String!, password: String!): Profile
     signup(firstname: String!, lastname: String!, email: String!, password: String!): Profile
     login(email: String!, password: String!): Profile
+}
+
+type GithubProfile {
+    id: Int!
+    owner: Owner!
+}
+
+type Owner {
+    login: String!
+    avatar_url: String!
+    url: String!
+    html_url: String!
+    followers_url: String!
+    following_url: String!
+    starred_url: String!
+    company: String
+    location: String
+    email: String!
+    bio: String
 }
 
 type Profile {
