@@ -11,7 +11,10 @@ query getProfile($id: Int!) {
         email
     }
 }
- */
+*/
+
+var jwt = "dumdumtoken94";
+
 var profiles = [
     // {
     //     id: 1,
@@ -57,7 +60,9 @@ const signup = ({ firstname, lastname, email, password }) => {
         password: password,
         firstname: firstname,
         lastname: lastname,
-
+        jwt: {
+            tok: jwt + newId    // testing dummy token
+        }
     }];
     // return Promise.resolve(users[users.length-1]);
 
@@ -66,13 +71,14 @@ const signup = ({ firstname, lastname, email, password }) => {
         firstname: firstname,
         lastname: lastname,
         email: email
-    }]
-    return Promise.resolve(profiles[profiles.length - 1]);
+    }];
+    to = users[newId].jwt
+    return Promise.resolve(to);
+    // return Promise.resolve(profiles[profiles.length - 1]);
 }
 
 //// For production
 // const signup = ({ firstname, lastname, email, password }) => {
-
 //     const userAction = async() => {
 //         const response = await fetch('http://localhost:8000/signup', {
 //             method: 'POST',

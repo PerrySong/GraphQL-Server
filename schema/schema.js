@@ -12,12 +12,15 @@ type Query {
 
 type Mutation {
     # signup(firstname: String!, lastname: String!, email: String!, password: String!): Profile
-    signup(firstname: String!, lastname: String!, email: String!, password: String!): Profile
-    login(email: String!, password: String!): Profile
+    signup(firstname: String!, lastname: String!, email: String!, password: String!): Jwt
+    login(email: String!, password: String!): Jwt
+}
+
+type Jwt {
+    tok: String!
 }
 
 type Owner {
-    login: String!
     avatar_url: String!
     url: String!
     html_url: String!
@@ -48,5 +51,6 @@ type User {
     password: String!
     firstname: String!
     lastname: String!
+    jwt: Jwt!
 }
 `;
