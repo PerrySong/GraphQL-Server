@@ -1,5 +1,8 @@
-const gRPCClient = require(__dirname + '/../gRPCClient/client');
+const gRPCClient = require(__dirname + '/../gRPCClient/client')
+const jwtsecret = require('../config.json')
+var jwt = require('jsonwebtoken');
 const { UserInputError, ForbiddenError } = require('apollo-server');
+
 // Resolvers define the technique for fetching the types in the
 // schema.  We'll retrieve books from the "books" array above.
 // TESTING DUMMY USERS
@@ -15,8 +18,7 @@ query getProfile($id: Int!) {
 }
 */
 
-var jwt = "dumdumtoken94";
-var dummyCount = 0;
+
 
 var profiles = [
     // {
@@ -116,53 +118,79 @@ const signup = ({ firstname, lastname, email, password }) => {
     // return Promise.resolve(profiles[profiles.length - 1]);
 }
 
-var gitHubProfiles = [
-    {
-        id: 0,
-        username: "Teean Ronson",
-        avatar_url: "https://media.licdn.com/dms/image/C5603AQEzDobK9kQ_ow/profile-displayphoto-shrink_200_200/0?e=1557964800&v=beta&t=ADTJOYvDlT5mTl3Ncz97-bwDAVJE4FXwykRh0RDOt60",
-        html_url: "https://github.com/TeeanRonson",
-        email: "email@gmail.com",
-        location: "San Francisco",
-        bio: "Welcome to Showcase! This is my bio. Here I will talk to you about nothing. Yes, you read that right. Nothing. The concept of nothing. There is nothing to talk about here because we are talking about nothing. Is there really nothing to talk about if we are talking about talking about nothing? Will we then be talking about something? Who knows.",
-        company: "Showcase",
-        repos_url: "https://github.com/TeeanRonson?tab=repositories",
-        public_repos: 27,
-    },
-    {
-        id: 1,
-        username: "Perry Song",
-        avatar_url: "https://avatars2.githubusercontent.com/u/26971233?v=4", 
-        html_url: "https://github.com/PerrySong",
-        email: "psong4@dons.usfca.edu",
-        location: "San Francisco",
-        bio: "Smelly code, smelly code, what are they feeding you. Smelly code, smelly code, it's not your fault! Smelly code, smelly code, what are they feeding you. Smelly code, smelly code, it's not your fault! Smelly code, smelly code, what are they feeding you. Smelly code, smelly code, it's not your fault!",
-        company: "Showcase",
-        repos_url: "https://github.com/PerrySong?tab=repositories",
-        public_repos: 42,
-    },
-    {
-        id: 2,
-        username: "Drew Noma",
-        avatar_url: "https://avatars2.githubusercontent.com/u/26971233?v=4", 
-        html_url: "https://github.com/dknoma",
-        email: "dknoma@dons.usfca.edu",
-        location: "San Francisco",
-        bio: "You found me!",
-        company: "Showcase",
-        repos_url: "https://github.com/dknoma?tab=repositories",
-        public_repos: 21,
-    },
-]
-
-const getGitHubInfo = ({ id }) => {
-    const user = gitHubProfiles.find(u => u.id === id);
-    console.log("user: " + user);
-    if(user === undefined || user === null) {
-        throw new ForbiddenError('Form Arguments invalid');
+// <<<<<<< perry
+const getGitHubUser = (Jwt) => {
+    try {
+        console.log(jwtsecret.jwtsecret)
+        let decoded = jwt.verify(Jwt, jwtsecret.jwtsecret, { algorithm: 'RS256'});
+        let id = decoded.id
+        const user = gRPCClient.GetGithubInfo(id)
+        return user
+    } catch(err) {
+        return Promise.resolve(err)
     }
-    return user;
 }
+
+const getGitHubRepos = (Jwt) => {
+    try {
+        console.log(jwtsecret.jwtsecret)
+        let decoded = jwt.verify(Jwt, jwtsecret.jwtsecret, { algorithm: 'RS256'});
+        let id = decoded.id
+        const repos = gRPCClient.GetGithubRepos(id)
+        return repos
+    } catch(err) {
+        return Promise.resolve(err)
+    }
+}
+
+// =======
+// var gitHubProfiles = [
+//     {
+//         id: 0,
+//         username: "Teean Ronson",
+//         avatar_url: "https://media.licdn.com/dms/image/C5603AQEzDobK9kQ_ow/profile-displayphoto-shrink_200_200/0?e=1557964800&v=beta&t=ADTJOYvDlT5mTl3Ncz97-bwDAVJE4FXwykRh0RDOt60",
+//         html_url: "https://github.com/TeeanRonson",
+//         email: "email@gmail.com",
+//         location: "San Francisco",
+//         bio: "Welcome to Showcase! This is my bio. Here I will talk to you about nothing. Yes, you read that right. Nothing. The concept of nothing. There is nothing to talk about here because we are talking about nothing. Is there really nothing to talk about if we are talking about talking about nothing? Will we then be talking about something? Who knows.",
+//         company: "Showcase",
+//         repos_url: "https://github.com/TeeanRonson?tab=repositories",
+//         public_repos: 27,
+//     },
+//     {
+//         id: 1,
+//         username: "Perry Song",
+//         avatar_url: "https://avatars2.githubusercontent.com/u/26971233?v=4", 
+//         html_url: "https://github.com/PerrySong",
+//         email: "psong4@dons.usfca.edu",
+//         location: "San Francisco",
+//         bio: "Smelly code, smelly code, what are they feeding you. Smelly code, smelly code, it's not your fault! Smelly code, smelly code, what are they feeding you. Smelly code, smelly code, it's not your fault! Smelly code, smelly code, what are they feeding you. Smelly code, smelly code, it's not your fault!",
+//         company: "Showcase",
+//         repos_url: "https://github.com/PerrySong?tab=repositories",
+//         public_repos: 42,
+//     },
+//     {
+//         id: 2,
+//         username: "Drew Noma",
+//         avatar_url: "https://avatars2.githubusercontent.com/u/26971233?v=4", 
+//         html_url: "https://github.com/dknoma",
+//         email: "dknoma@dons.usfca.edu",
+//         location: "San Francisco",
+//         bio: "You found me!",
+//         company: "Showcase",
+//         repos_url: "https://github.com/dknoma?tab=repositories",
+//         public_repos: 21,
+//     },
+// ]
+
+// const getGitHubInfo = ({ id }) => {
+//     const user = gitHubProfiles.find(u => u.id === id);
+//     console.log("user: " + user);
+//     if(user === undefined || user === null) {
+//         throw new ForbiddenError('Form Arguments invalid');
+//     }
+//     return user;
+// }
 
 // For testing purposes. Use the function below this to do the actual mutation
 // const signup = ({ firstname, lastname, email, password }) => {
@@ -184,6 +212,7 @@ const getGitHubInfo = ({ id }) => {
 //     // console.log("res = " + res)
 //     return user;
 // }
+
 
 //// For production
 // const signup = ({ firstname, lastname, email, password }) => {
@@ -230,7 +259,12 @@ exports.resolvers = {
             return profile;
         },
         getUsers: (_, args, __, ___) => getAllUsers(),
-        getGitHubUser: (_, { id }, __, ___) => getGitHubInfo({ id: id }),
+// <<<<<<< perry
+        getGitHubUser: (_, { Jwt }, __, ___) => getGitHubUser(Jwt),
+        getGitHubRepos: (_, { Jwt }, __, ___) => getGitHubRepos(Jwt),
+// =======
+//         getGitHubUser: (_, { id }, __, ___) => getGitHubInfo({ id: id }),
+// >>>>>>> master
     },
     Mutation: {
         // userInputError: (parent, args, context, info) => {

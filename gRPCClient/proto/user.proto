@@ -1,6 +1,37 @@
 syntax = "proto3";
 
 package user;
+import "google/protobuf/timestamp.proto";
+
+message Repo {
+    string git_tags_url = 1;
+    string description = 2;
+    bool private = 3;
+    string languages_url = 4;
+    string stargazers_url = 5;
+    string commits_url = 6;
+    google.protobuf.Timestamp repo_created_at = 7;
+    google.protobuf.Timestamp repo_updated_at = 8;
+    string home_page = 9;
+    int32 stargazers_count = 10;
+    string labels_url = 11;
+    string language = 12;
+    int32 watchers = 13;
+
+}
+
+message GithubRepoListResponse {
+    repeated Repo repos = 1;
+}
+
+message GithubRepoListRequest {
+    uint64 id = 1;
+}
+
+message UserGithubBasicRequest {
+    uint64 id = 1;
+}
+
 message UserGithubBasicResponse {
     int64 id = 1;
     string username = 2;
@@ -14,10 +45,16 @@ message UserGithubBasicResponse {
     int32 public_repos = 10;
 }
 
-message UserGithubBasicRequest {
-    uint64 id = 1;
+message UserHasTokenRequest {
+    int64 id = 1;
+}
+
+message UserHasTokenResponse {
+    bool has_token = 1;
 }
 
 service UserService {
     rpc GetGithubInfo(UserGithubBasicRequest) returns (UserGithubBasicResponse) {};
+    rpc GetGithubRepos(GithubRepoListRequest) returns (GithubRepoListResponse) {};
+    rpc UserHasToken(UserHasTokenRequest) returns (UserHasTokenResponse) {};
 }
