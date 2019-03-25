@@ -6,6 +6,7 @@ exports.typeDefs = gql `
 type Query {
    getProfile(id: Int!): Profile
    getProfileList: [Profile]   # "[]" means this is a list of profiles
+   getUser(jwt: String): Profile
    getUsers: [User]
    getGithubProfile: GithubProfile
    getGitHubUser(id: Int!): GitHubUser
@@ -15,6 +16,7 @@ type Mutation {
     # signup(firstname: String!, lastname: String!, email: String!, password: String!): Profile
     signup(firstname: String!, lastname: String!, email: String!, password: String!): Jwt
     login(email: String!, password: String!): Jwt
+    userInputError(input: String): String
 }
 
 type Jwt {
@@ -52,6 +54,7 @@ type User {
     lastname: String!
     email: String!
     password: String!
+    jwt: Jwt
 }
 
 # Perry edited March 17th
