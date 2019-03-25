@@ -8,7 +8,11 @@ type Query {
    getProfileList: [Profile]   # "[]" means this is a list of profiles
    getUsers: [User]
    getGithubProfile: GithubProfile
-   getGitHubUser(id: Int!): GitHubUser
+   getGitHubUser(Jwt: String!): GitHubUser
+
+   getGitHubRepos(Jwt: String!): GitHubRepoList!
+   hasGithubToken(Jwt: String!): HasToken
+
 }
 
 type Mutation {
@@ -67,4 +71,28 @@ type GitHubUser {
     location: String
     public_repos: Int!
 }
+
+type GitHubRepo {
+    git_tags_url: String!
+    description: String
+    private: Boolean!
+    languages_url: String!
+    stargazers_url: String!
+    commits_url: String
+    repo_created_at: String!
+    repo_updated_at: String!
+    home_page: String
+    stargazers_count: Int!
+    labels_url: String
+    language: String
+    watchers: Int
+}
+type GitHubRepoList {
+    repos: [GitHubRepo!]
+}
+
+type HasToken {
+    has_token: Boolean!
+}
+
 `;

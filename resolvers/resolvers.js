@@ -1,4 +1,6 @@
 const gRPCClient = require(__dirname + '/../gRPCClient/client')
+const jwtsecret = require('../config.json')
+var jwt = require('jsonwebtoken');
 // Resolvers define the technique for fetching the types in the
 // schema.  We'll retrieve books from the "books" array above.
 // TESTING DUMMY USERS
@@ -14,7 +16,6 @@ query getProfile($id: Int!) {
 }
 */
 
-var jwt = "dumdumtoken94";
 
 var profiles = [
     // {
@@ -65,13 +66,30 @@ const login = ({ email, password }) => {
     return jwt
 }
 
-const getGitHubInfo = (id) => {
-    const user = gRPCClient.GetGithubInfo(id)
-    // console.log("what", user)
-    // const res = Promise.resolve(user)
-    // console.log("res = " + res)
-    return user;
+const getGitHubUser = (Jwt) => {
+    try {
+        console.log(jwtsecret.jwtsecret)
+        let decoded = jwt.verify(Jwt, jwtsecret.jwtsecret, { algorithm: 'RS256'});
+        let id = decoded.id
+        const user = gRPCClient.GetGithubInfo(id)
+        return user
+    } catch(err) {
+        return Promise.resolve(err)
+    }
 }
+
+const getGitHubRepos = (Jwt) => {
+    try {
+        console.log(jwtsecret.jwtsecret)
+        let decoded = jwt.verify(Jwt, jwtsecret.jwtsecret, { algorithm: 'RS256'});
+        let id = decoded.id
+        const repos = gRPCClient.GetGithubRepos(id)
+        return repos
+    } catch(err) {
+        return Promise.resolve(err)
+    }
+}
+
 
 //// For production
 // const signup = ({ firstname, lastname, email, password }) => {
@@ -106,7 +124,8 @@ exports.resolvers = {
         //      Define which param you want from the args: in our case its "id"
         getProfile: (_, { id }, __, ___) => getProfileById({ id: id }),
         getUsers: (_, args, __, ___) => getAllUsers(),
-        getGitHubUser: (_, { id }, __, ___) => getGitHubInfo(id),
+        getGitHubUser: (_, { Jwt }, __, ___) => getGitHubUser(Jwt),
+        getGitHubRepos: (_, { Jwt }, __, ___) => getGitHubRepos(Jwt),
     },
     Mutation: {
         // Same as above: get these variables from the args param
