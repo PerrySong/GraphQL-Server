@@ -56,84 +56,84 @@ const getProfileById = ({ id }) => {
     return Promise.resolve(profiles.find(p => p.id === id));
 }
 
-const login = ({ email, password }) => {
-    if(email === '' || password === '') {
-        console.log("ERROR")
-        throw new UserInputError('Form Arguments invalid');
-    }
-    var user = users.find(u => {
-        if (u.email === email) {
-            return u;
-        }
-    });
-    console.log("user " + user.email);
-    if(user !== undefined || user.password === password) {
-        users[user.id].jwt.Jwt = jwt + dummyCount;
-        var to = { Jwt: jwt + dummyCount };
-        console.log(to);
-        dummyCount++;
-        return to;
-        // return Promise.resolve(to);
-    } else {
-        console.log("ERROR 2")
-        throw new UserInputError('Form Arguments invalid');
-    }
-}
+// const login = ({ email, password }) => {
+//     if(email === '' || password === '') {
+//         console.log("ERROR")
+//         throw new UserInputError('Form Arguments invalid');
+//     }
+//     var user = users.find(u => {
+//         if (u.email === email) {
+//             return u;
+//         }
+//     });
+//     console.log("user " + user.email);
+//     if(user !== undefined || user.password === password) {
+//         users[user.id].jwt.Jwt = jwt + dummyCount;
+//         var to = { Jwt: jwt + dummyCount };
+//         console.log(to);
+//         dummyCount++;
+//         return to;
+//         // return Promise.resolve(to);
+//     } else {
+//         console.log("ERROR 2")
+//         throw new UserInputError('Form Arguments invalid');
+//     }
+// }
 
-// For testing purposes. Use the function below this to do the actual mutation
-const signup = ({ firstname, lastname, email, password }) => {
-    var userCheck = users.find(u => {
-        if (u.email === email) {
-            return u;
-        }
-    });
-    if(userCheck !== undefined && userCheck !== null && userCheck.email === email) {
-        throw new UserInputError('Email already exists');
-    }
-    var newId = users.length > 0 ? users[users.length - 1].id + 1 : 0;
-    dummyCount++;
-    users = [...users, {
-        id: newId,
-        email: email,
-        password: password,
-        firstname: firstname,
-        lastname: lastname,
-        jwt: {
-            Jwt: jwt + dummyCount    // testing dummy token
-        }
-    }];
-    // return Promise.resolve(users[users.length-1]);
+// // For testing purposes. Use the function below this to do the actual mutation
+// const signup = ({ firstname, lastname, email, password }) => {
+//     var userCheck = users.find(u => {
+//         if (u.email === email) {
+//             return u;
+//         }
+//     });
+//     if(userCheck !== undefined && userCheck !== null && userCheck.email === email) {
+//         throw new UserInputError('Email already exists');
+//     }
+//     var newId = users.length > 0 ? users[users.length - 1].id + 1 : 0;
+//     dummyCount++;
+//     users = [...users, {
+//         id: newId,
+//         email: email,
+//         password: password,
+//         firstname: firstname,
+//         lastname: lastname,
+//         jwt: {
+//             Jwt: jwt + dummyCount    // testing dummy token
+//         }
+//     }];
+//     // return Promise.resolve(users[users.length-1]);
 
-    profiles = [...profiles, {
-        id: newId,
-        firstname: firstname,
-        lastname: lastname,
-        email: email,
-        title: "Hello there!",
-        location: "Earth",
-    }];
-    to = users[newId].jwt
-    // console.log(to);
-    return Promise.resolve(to);
-    // return Promise.resolve(profiles[profiles.length - 1]);
-}
+//     profiles = [...profiles, {
+//         id: newId,
+//         firstname: firstname,
+//         lastname: lastname,
+//         email: email,
+//         title: "Hello there!",
+//         location: "Earth",
+//     }];
+//     to = users[newId].jwt
+//     // console.log(to);
+//     return Promise.resolve(to);
+//     // return Promise.resolve(profiles[profiles.length - 1]);
+// }
 
-// <<<<<<< perry
-const getGitHubUser = (Jwt) => {
+const getGitHubUser = ({ jwt: Jwt }) => {
     try {
-        console.log(jwtsecret.jwtsecret)
+        // console.log("dweb: " + jwtsecret.jwtsecret)
         let decoded = jwt.verify(Jwt, jwtsecret.jwtsecret, { algorithm: 'RS256'});
         let id = decoded.id
+        // console.log("id: " + id)
         const user = gRPCClient.GetGithubInfo(id)
         return user
     } catch(err) {
-        return Promise.resolve(err)
+        throw new UserInputError('Email or password was wrong.');
     }
 }
 
 const getGitHubRepos = (Jwt) => {
     try {
-        console.log(jwtsecret.jwtsecret)
+        // console.log(jwtsecret.jwtsecret)
         let decoded = jwt.verify(Jwt, jwtsecret.jwtsecret, { algorithm: 'RS256'});
         let id = decoded.id
         const repos = gRPCClient.GetGithubRepos(id)
@@ -144,66 +144,72 @@ const getGitHubRepos = (Jwt) => {
 }
 
 // =======
-// var gitHubProfiles = [
-//     {
-//         id: 0,
-//         username: "Teean Ronson",
-//         avatar_url: "https://media.licdn.com/dms/image/C5603AQEzDobK9kQ_ow/profile-displayphoto-shrink_200_200/0?e=1557964800&v=beta&t=ADTJOYvDlT5mTl3Ncz97-bwDAVJE4FXwykRh0RDOt60",
-//         html_url: "https://github.com/TeeanRonson",
-//         email: "email@gmail.com",
-//         location: "San Francisco",
-//         bio: "Welcome to Showcase! This is my bio. Here I will talk to you about nothing. Yes, you read that right. Nothing. The concept of nothing. There is nothing to talk about here because we are talking about nothing. Is there really nothing to talk about if we are talking about talking about nothing? Will we then be talking about something? Who knows.",
-//         company: "Showcase",
-//         repos_url: "https://github.com/TeeanRonson?tab=repositories",
-//         public_repos: 27,
-//     },
-//     {
-//         id: 1,
-//         username: "Perry Song",
-//         avatar_url: "https://avatars2.githubusercontent.com/u/26971233?v=4", 
-//         html_url: "https://github.com/PerrySong",
-//         email: "psong4@dons.usfca.edu",
-//         location: "San Francisco",
-//         bio: "Smelly code, smelly code, what are they feeding you. Smelly code, smelly code, it's not your fault! Smelly code, smelly code, what are they feeding you. Smelly code, smelly code, it's not your fault! Smelly code, smelly code, what are they feeding you. Smelly code, smelly code, it's not your fault!",
-//         company: "Showcase",
-//         repos_url: "https://github.com/PerrySong?tab=repositories",
-//         public_repos: 42,
-//     },
-//     {
-//         id: 2,
-//         username: "Drew Noma",
-//         avatar_url: "https://avatars2.githubusercontent.com/u/26971233?v=4", 
-//         html_url: "https://github.com/dknoma",
-//         email: "dknoma@dons.usfca.edu",
-//         location: "San Francisco",
-//         bio: "You found me!",
-//         company: "Showcase",
-//         repos_url: "https://github.com/dknoma?tab=repositories",
-//         public_repos: 21,
-//     },
-// ]
+var gitHubProfiles = [
+    {
+        id: 0,
+        username: "Rong Liew",
+        avatar_url: "https://media.licdn.com/dms/image/C5603AQEzDobK9kQ_ow/profile-displayphoto-shrink_200_200/0?e=1557964800&v=beta&t=ADTJOYvDlT5mTl3Ncz97-bwDAVJE4FXwykRh0RDOt60",
+        html_url: "https://github.com/TeeanRonson",
+        email: "tianrongliew@gmail.com",
+        location: "San Francisco, CA USA",
+        bio: "Welcome to Showcase! This is my bio. Here I will talk to you about nothing. Yes, you read that right. Nothing. The concept of nothing. There is nothing to talk about here because we are talking about nothing. Is there really nothing to talk about if we are talking about talking about nothing? Will we then be talking about something? Who knows.",
+        company: "Showcase",
+        repos_url: "https://github.com/TeeanRonson?tab=repositories",
+        public_repos: 27,
+        connections: 2,
+        featured: 3,
+    },
+    {
+        id: 1,
+        username: "Perry Song",
+        avatar_url: "https://media.licdn.com/dms/image/C5103AQFUDEb2cNAa2w/profile-displayphoto-shrink_800_800/0?e=1557964800&v=beta&t=vT3AyR_DCCHg2iIHGtiK6uEsEeegnPqDcpPkUj6i26U&quot)", 
+        html_url: "https://github.com/PerrySong",
+        email: "psong4@dons.usfca.edu",
+        location: "San Francisco, CA USA",
+        bio: "Smelly code, smelly code, what are they feeding you. Smelly code, smelly code, it's not your fault! Smelly code, smelly code, what are they feeding you. Smelly code, smelly code, it's not your fault! Smelly code, smelly code, what are they feeding you. Smelly code, smelly code, it's not your fault!",
+        company: "Showcase",
+        repos_url: "https://github.com/PerrySong?tab=repositories",
+        public_repos: 42,
+        connections: 2,
+        featured: 4,
+    },
+    {
+        id: 2,
+        username: "Drew Noma",
+        avatar_url: "https://avatars2.githubusercontent.com/u/26971233?v=4", 
+        html_url: "https://github.com/dknoma",
+        email: "dknoma@dons.usfca.edu",
+        location: "San Francisco, CA USA",
+        bio: "You found me! - Some shopkeeper by the river probably who's been there for 16 years",
+        company: "Showcase",
+        repos_url: "https://github.com/dknoma?tab=repositories",
+        public_repos: 21,
+        connections: 2,
+        featured: 5,
+    },
+]
 
-// const getGitHubInfo = ({ id }) => {
-//     const user = gitHubProfiles.find(u => u.id === id);
-//     console.log("user: " + user);
-//     if(user === undefined || user === null) {
-//         throw new ForbiddenError('Form Arguments invalid');
-//     }
-//     return user;
-// }
+const getGitHubInfoById = ({ id }) => {
+    const user = gitHubProfiles.find(u => u.id === id);
+    // console.log("user: " + user);
+    if(user === undefined || user === null) {
+        throw new ForbiddenError('Form Arguments invalid');
+    }
+    return user;
+}
 
 // For testing purposes. Use the function below this to do the actual mutation
-// const signup = ({ firstname, lastname, email, password }) => {
-//     const jwt = gRPCClient.SignUp(email, password, firstname, lastname)
-//     jwt.then(jwt => console.log(jwt))
-//     return jwt
-// }
+const signup = ({ firstname, lastname, email, password }) => {
+    const jwt = gRPCClient.SignUp(email, password, firstname, lastname)
+    // jwt.then(jwt => console.log(jwt))
+    return jwt
+}
 
-// const login = ({ email, password }) => {
-//     const jwt = gRPCClient.LogIn(email, password)
-//     jwt.then(jwt => console.log(jwt))
-//     return jwt
-// }
+const login = ({ email, password }) => {
+    const jwt = gRPCClient.LogIn(email, password)
+    // jwt.then(jwt => console.log(jwt))
+    return jwt
+}
 
 // const getGitHubInfo = (id) => {
 //     const user = gRPCClient.GetGithubInfo(id)
@@ -259,12 +265,9 @@ exports.resolvers = {
             return profile;
         },
         getUsers: (_, args, __, ___) => getAllUsers(),
-// <<<<<<< perry
-        getGitHubUser: (_, { Jwt }, __, ___) => getGitHubUser(Jwt),
+        getGitHubUser: (_, { Jwt }, __, ___) => getGitHubUser({ jwt: Jwt }),
         getGitHubRepos: (_, { Jwt }, __, ___) => getGitHubRepos(Jwt),
-// =======
-//         getGitHubUser: (_, { id }, __, ___) => getGitHubInfo({ id: id }),
-// >>>>>>> master
+        getGitHubUserById: (_, { id }, __, ___) => getGitHubInfoById({ id: id }),
     },
     Mutation: {
         // userInputError: (parent, args, context, info) => {

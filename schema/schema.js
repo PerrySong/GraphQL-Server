@@ -72,6 +72,8 @@ type GitHubUser {
     location: String
     repos_url: String!
     public_repos: Int!
+    connections: Int!
+    featured: Int
 }
 
 type GitHubRepo {
