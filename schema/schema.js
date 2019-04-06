@@ -6,20 +6,21 @@ exports.typeDefs = gql `
 type Query {
    getProfile(id: Int!): Profile
    getProfileList: [Profile]   # "[]" means this is a list of profiles
+   getUser(jwt: String): Profile
    getUsers: [User]
    getGithubProfile: GithubProfile
    getGitHubUser(Jwt: String!): GitHubUser
+   
    getProgrammingLanguages(Jwt: String!): Language
-
    getGitHubRepos(Jwt: String!): GitHubRepoList!
    hasGithubToken(Jwt: String!): HasToken
-
+   getGitHubUserById(id: Int!): GitHubUser
 }
 
 type Mutation {
-    # signup(firstname: String!, lastname: String!, email: String!, password: String!): Profile
     signup(firstname: String!, lastname: String!, email: String!, password: String!): Jwt
     login(email: String!, password: String!): Jwt
+    userInputError(input: String): String
 }
 
 type Jwt {
@@ -32,7 +33,6 @@ type Language {
 
 type Owner {
     avatar_url: String!
-    url: String!
     html_url: String!
     followers_url: String!
     following_url: String!
@@ -53,6 +53,8 @@ type Profile {
    firstname: String!
    lastname: String!
    email: String!
+   title: String
+   location: String
 }
 
 type User {
@@ -61,19 +63,20 @@ type User {
     lastname: String!
     email: String!
     password: String!
+    jwt: Jwt
 }
 
 # Perry edited March 17th
 type GitHubUser {
     id: Int!
     username: String!
-    url: String!
+    html_url: String!
     avatar_url: String!
     bio: String
     company: String
-    repos_url: String!
     email: String
     location: String
+    repos_url: String!
     public_repos: Int!
 }
 
