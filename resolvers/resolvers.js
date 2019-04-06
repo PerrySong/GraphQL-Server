@@ -56,66 +56,80 @@ const getProfileById = ({ id }) => {
     return Promise.resolve(profiles.find(p => p.id === id));
 }
 
-const login = ({ email, password }) => {
-    if(email === '' || password === '') {
-        console.log("ERROR")
-        throw new UserInputError('Form Arguments invalid');
-    }
-    var user = users.find(u => {
-        if (u.email === email) {
-            return u;
-        }
-    });
-    console.log("user " + user.email);
-    if(user !== undefined || user.password === password) {
-        users[user.id].jwt.Jwt = jwt + dummyCount;
-        var to = { Jwt: jwt + dummyCount };
-        console.log(to);
-        dummyCount++;
-        return to;
-        // return Promise.resolve(to);
-    } else {
-        console.log("ERROR 2")
-        throw new UserInputError('Form Arguments invalid');
-    }
-}
+// const login = ({ email, password }) => {
+//     console.log("Logining")
+//     if(email === '' || password === '') {
+//         console.log("ERROR")
+//         throw new UserInputError('Form Arguments invalid');
+//     }
+//     var user = users.find(u => {
+//         if (u.email === email) {
+//             return u;
+//         }
+//     });
+//     console.log("user " + user.email);
+//     if(user !== undefined || user.password === password) {
+//         users[user.id].jwt.Jwt = jwt + dummyCount;
+//         var to = { Jwt: jwt + dummyCount };
+//         console.log(to);
+//         dummyCount++;
+//         return to;
+//         // return Promise.resolve(to);
+//     } else {
+//         console.log("ERROR 2")
+//         throw new UserInputError('Form Arguments invalid');
+//     }
+// }
+
+// For testing purposes. Use the function below this to do the actual mutation
+// const signup = ({ firstname, lastname, email, password }) => {
+//     var userCheck = users.find(u => {
+//         if (u.email === email) {
+//             return u;
+//         }
+//     });
+//     if(userCheck !== undefined && userCheck !== null && userCheck.email === email) {
+//         throw new UserInputError('Email already exists');
+//     }
+//     var newId = users.length > 0 ? users[users.length - 1].id + 1 : 0;
+//     dummyCount++;
+//     users = [...users, {
+//         id: newId,
+//         email: email,
+//         password: password,
+//         firstname: firstname,
+//         lastname: lastname,
+//         jwt: {
+//             Jwt: jwt + dummyCount    // testing dummy token
+//         }
+//     }];
+//     // return Promise.resolve(users[users.length-1]);
+
+//     profiles = [...profiles, {
+//         id: newId,
+//         firstname: firstname,
+//         lastname: lastname,
+//         email: email,
+//         title: "Hello there!",
+//         location: "Earth",
+//     }];
+//     to = users[newId].jwt
+//     // console.log(to);
+//     return Promise.resolve(to);
+//     // return Promise.resolve(profiles[profiles.length - 1]);
+// }
 
 // For testing purposes. Use the function below this to do the actual mutation
 const signup = ({ firstname, lastname, email, password }) => {
-    var userCheck = users.find(u => {
-        if (u.email === email) {
-            return u;
-        }
-    });
-    if(userCheck !== undefined && userCheck !== null && userCheck.email === email) {
-        throw new UserInputError('Email already exists');
-    }
-    var newId = users.length > 0 ? users[users.length - 1].id + 1 : 0;
-    dummyCount++;
-    users = [...users, {
-        id: newId,
-        email: email,
-        password: password,
-        firstname: firstname,
-        lastname: lastname,
-        jwt: {
-            Jwt: jwt + dummyCount    // testing dummy token
-        }
-    }];
-    // return Promise.resolve(users[users.length-1]);
+    const jwt = gRPCClient.SignUp(email, password, firstname, lastname)
+    jwt.then(jwt => console.log(jwt))
+    return jwt
+}
 
-    profiles = [...profiles, {
-        id: newId,
-        firstname: firstname,
-        lastname: lastname,
-        email: email,
-        title: "Hello there!",
-        location: "Earth",
-    }];
-    to = users[newId].jwt
-    // console.log(to);
-    return Promise.resolve(to);
-    // return Promise.resolve(profiles[profiles.length - 1]);
+const login = ({ email, password }) => {
+    const jwt = gRPCClient.LogIn(email, password)
+    jwt.then(jwt => console.log(jwt))
+    return jwt
 }
 
 // <<<<<<< perry
