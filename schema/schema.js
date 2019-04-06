@@ -9,6 +9,7 @@ type Query {
    getUsers: [User]
    getGithubProfile: GithubProfile
    getGitHubUser(Jwt: String!): GitHubUser
+   getProgrammingLanguages(Jwt: String!): Language
 
    getGitHubRepos(Jwt: String!): GitHubRepoList!
    hasGithubToken(Jwt: String!): HasToken
@@ -23,6 +24,10 @@ type Mutation {
 
 type Jwt {
     Jwt: String!
+}
+
+type Language {
+    language: [String!]
 }
 
 type Owner {

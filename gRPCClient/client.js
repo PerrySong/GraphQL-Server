@@ -39,6 +39,22 @@ const GetGithubRepos = (id) => {
   return client.GetGithubRepos().sendMessage({id: id})
 }
 
+const GetProgrammingLanguages = (id) => {
+  console.log("gRPC client login")
+  var packageDefinition = protoLoader.loadSync(
+    AUTH_PROTO_PATH,
+    {keepCase: true,
+     longs: String,
+     enums: String,
+     defaults: true,
+     oneofs: true
+    });
+  let user_proto = grpc.loadPackageDefinition(packageDefinition).user;
+  let client = new auth_proto.AuthService('127.0.0.1:8090', grpc.credentials.createInsecure())
+  grpc_promise.promisifyAll(client);
+  return client.GetProgrammingLanguages().sendMessage({id: id})
+}
+
 const SignUp = (email, password, firstname, lastname) => {
   var packageDefinition = protoLoader.loadSync(
     AUTH_PROTO_PATH,
@@ -69,6 +85,7 @@ const LogIn = (email, password) => {
   grpc_promise.promisifyAll(client);
   return client.LogIn().sendMessage({Email: email, Password: password});
 }
+
 
 
 module.exports = {

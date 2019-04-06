@@ -68,7 +68,7 @@ const login = ({ email, password }) => {
 
 const getGitHubUser = (Jwt) => {
     try {
-        console.log(jwtsecret.jwtsecret)
+        // console.log(jwtsecret.jwtsecret)
         let decoded = jwt.verify(Jwt, jwtsecret.jwtsecret, { algorithm: 'RS256'});
         let id = decoded.id
         const user = gRPCClient.GetGithubInfo(id)
@@ -80,11 +80,24 @@ const getGitHubUser = (Jwt) => {
 
 const getGitHubRepos = (Jwt) => {
     try {
-        console.log(jwtsecret.jwtsecret)
         let decoded = jwt.verify(Jwt, jwtsecret.jwtsecret, { algorithm: 'RS256'});
         let id = decoded.id
         const repos = gRPCClient.GetGithubRepos(id)
+
+        // console.log(repos)
         return repos
+    } catch(err) {
+        return Promise.resolve(err)
+    }
+}
+
+getProgrammingLanguages = (Jwt) => {
+    console.log("Herer!!!!")
+    try {
+        let decoded = jwt.verify(Jwt, jwtsecret.jwtsecret, { algorithm: 'RS256'});
+        let id = decoded.id
+        const languages = gRPCClient.getProgrammingLanguages(id)
+        return languages
     } catch(err) {
         return Promise.resolve(err)
     }
@@ -126,6 +139,7 @@ exports.resolvers = {
         getUsers: (_, args, __, ___) => getAllUsers(),
         getGitHubUser: (_, { Jwt }, __, ___) => getGitHubUser(Jwt),
         getGitHubRepos: (_, { Jwt }, __, ___) => getGitHubRepos(Jwt),
+        getProgrammingLanguages: (_, { Jwt }, __, ___) => getGitHubRepos(Jwt),
     },
     Mutation: {
         // Same as above: get these variables from the args param
