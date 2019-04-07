@@ -57,6 +57,10 @@ const getProfileById = ({ id }) => {
 }
 
 // const login = ({ email, password }) => {
+// <<<<<<< perry
+//     console.log("Logining")
+// =======
+// >>>>>>> master
 //     if(email === '' || password === '') {
 //         console.log("ERROR")
 //         throw new UserInputError('Form Arguments invalid');
@@ -79,6 +83,59 @@ const getProfileById = ({ id }) => {
 //         throw new UserInputError('Form Arguments invalid');
 //     }
 // }
+// <<<<<<< perry
+
+// For testing purposes. Use the function below this to do the actual mutation
+// const signup = ({ firstname, lastname, email, password }) => {
+//     var userCheck = users.find(u => {
+//         if (u.email === email) {
+//             return u;
+//         }
+//     });
+//     if(userCheck !== undefined && userCheck !== null && userCheck.email === email) {
+//         throw new UserInputError('Email already exists');
+//     }
+//     var newId = users.length > 0 ? users[users.length - 1].id + 1 : 0;
+//     dummyCount++;
+//     users = [...users, {
+//         id: newId,
+//         email: email,
+//         password: password,
+//         firstname: firstname,
+//         lastname: lastname,
+//         jwt: {
+//             Jwt: jwt + dummyCount    // testing dummy token
+//         }
+//     }];
+//     // return Promise.resolve(users[users.length-1]);
+
+//     profiles = [...profiles, {
+//         id: newId,
+//         firstname: firstname,
+//         lastname: lastname,
+//         email: email,
+//         title: "Hello there!",
+//         location: "Earth",
+//     }];
+//     to = users[newId].jwt
+//     // console.log(to);
+//     return Promise.resolve(to);
+//     // return Promise.resolve(profiles[profiles.length - 1]);
+// }
+
+// For testing purposes. Use the function below this to do the actual mutation
+const signup = ({ firstname, lastname, email, password }) => {
+    const jwt = gRPCClient.SignUp(email, password, firstname, lastname)
+    jwt.then(jwt => console.log(jwt))
+    return jwt
+}
+
+const login = ({ email, password }) => {
+    const jwt = gRPCClient.LogIn(email, password)
+    jwt.then(jwt => console.log(jwt))
+    return jwt
+}
+// =======
 
 // // For testing purposes. Use the function below this to do the actual mutation
 // const signup = ({ firstname, lastname, email, password }) => {
@@ -117,10 +174,15 @@ const getProfileById = ({ id }) => {
 //     return Promise.resolve(to);
 //     // return Promise.resolve(profiles[profiles.length - 1]);
 // }
+// >>>>>>> master
 
 const getGitHubUser = ({ jwt: Jwt }) => {
     try {
+// <<<<<<< perry
+        // console.log(jwtsecret.jwtsecret)
+// =======
         // console.log("dweb: " + jwtsecret.jwtsecret)
+// >>>>>>> master
         let decoded = jwt.verify(Jwt, jwtsecret.jwtsecret, { algorithm: 'RS256'});
         let id = decoded.id
         // console.log("id: " + id)
@@ -133,11 +195,28 @@ const getGitHubUser = ({ jwt: Jwt }) => {
 
 const getGitHubRepos = (Jwt) => {
     try {
+// <<<<<<< perry
+// =======
         // console.log(jwtsecret.jwtsecret)
+// >>>>>>> master
         let decoded = jwt.verify(Jwt, jwtsecret.jwtsecret, { algorithm: 'RS256'});
         let id = decoded.id
         const repos = gRPCClient.GetGithubRepos(id)
+
+        // console.log(repos)
         return repos
+    } catch(err) {
+        return Promise.resolve(err)
+    }
+}
+
+getProgrammingLanguages = (Jwt) => {
+    console.log("Herer!!!!")
+    try {
+        let decoded = jwt.verify(Jwt, jwtsecret.jwtsecret, { algorithm: 'RS256'});
+        let id = decoded.id
+        const languages = gRPCClient.getProgrammingLanguages(id)
+        return languages
     } catch(err) {
         return Promise.resolve(err)
     }
@@ -265,9 +344,16 @@ exports.resolvers = {
             return profile;
         },
         getUsers: (_, args, __, ___) => getAllUsers(),
-        getGitHubUser: (_, { Jwt }, __, ___) => getGitHubUser({ jwt: Jwt }),
+// <<<<<<< perry
+        getGitHubUser: (_, { Jwt }, __, ___) => getGitHubUser(Jwt),
         getGitHubRepos: (_, { Jwt }, __, ___) => getGitHubRepos(Jwt),
+        getProgrammingLanguages: (_, { Jwt }, __, ___) => getGitHubRepos(Jwt),
+
+// =======
+//         getGitHubUser: (_, { Jwt }, __, ___) => getGitHubUser({ jwt: Jwt }),
+//         getGitHubRepos: (_, { Jwt }, __, ___) => getGitHubRepos(Jwt),
         getGitHubUserById: (_, { id }, __, ___) => getGitHubInfoById({ id: id }),
+// >>>>>>> master
     },
     Mutation: {
         // userInputError: (parent, args, context, info) => {
